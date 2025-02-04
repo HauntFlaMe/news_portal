@@ -1,0 +1,59 @@
+1. Импорт моделей:
+   from django.contrib.auth.models import User
+   from news.models import Author, Category, Post, PostCategory, Comment
+
+2. Создание пользователей:
+   user1 = User.objects.create_user('user1', password='password1')
+   user2 = User.objects.create_user('user2', password='password2')
+
+3. Создание авторов:
+   author1 = Author.objects.create(user=user1)
+   author2 = Author.objects.create(user=user2)
+
+4. Добавление категорий:
+   Category.objects.create(name='Спорт')
+   Category.objects.create(name='Политика')
+   Category.objects.create(name='Образование')
+   Category.objects.create(name='Технологии')
+
+5. Создание статей и новостей:
+   post1 = Post.objects.create(author=author1, type='AR', title='Статья 1', text='Текст статьи 1')
+   post2 = Post.objects.create(author=author2, type='AR', title='Статья 2', text='Текст статьи 2')
+   post3 = Post.objects.create(author=author1, type='NW', title='Новость 1', text='Текст новости 1')
+
+6. Присвоение категорий:
+   post1.categories.add(Category.objects.get(name='Спорт'))
+   post1.categories.add(Category.objects.get(name='Политика'))
+   post2.categories.add(Category.objects.get(name='Образование'))
+   post3.categories.add(Category.objects.get(name='Технологии'))
+
+7. Создание комментариев:
+   Comment.objects.create(post=post1, user=user1, text='Комментарий 1')
+   Comment.objects.create(post=post2, user=user2, text='Комментарий 2')
+   Comment.objects.create(post=post3, user=user1, text='Комментарий 3')
+   Comment.objects.create(post=post1, user=user2, text='Комментарий 4')
+
+8. Корректировка рейтингов:
+   post1.like()
+   post2.dislike()
+   comment1 = Comment.objects.get(id=1)
+   comment1.like()
+   comment2 = Comment.objects.get(id=2)
+   comment2.dislike()
+
+9. Обновление рейтингов авторов:
+   author1.update_rating()
+   author2.update_rating()
+
+10. Вывод лучшего пользователя:
+    best_author = Author.objects.order_by('-rating').first()
+    print(f'Лучший пользователь: {best_author.user.username}, рейтинг: {best_author.rating}')
+
+11. Вывод лучшей статьи:
+    best_post = Post.objects.order_by('-rating').first()
+    print(f'Дата: {best_post.created_at}, Автор: {best_post.author.user.username}, Рейтинг: {best_post.rating}, Заголовок: {best_post.title}, Превью: {best_post.preview()}')
+
+12. Вывод всех комментариев к лучшей статье:
+    comments = Comment.objects.filter(post=best_post)
+    for comment in comments:
+        print(f'Дата: {comment.created_at}, Пользователь: {comment.user.username}, Рейтинг: {comment.rating}, Текст: {comment.text}')

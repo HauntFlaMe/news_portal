@@ -7,8 +7,18 @@ class Author(models.Model):
     rating = models.IntegerField(default=0)
 
     def update_rating(self):
-        # Логика обновления рейтинга
-        pass
+        # Суммарный рейтинг статей автора, умноженный на 3
+        post_rating = sum(post.rating for post in self.post_set.all()) * 3
+
+        # Суммарный рейтинг комментариев автора
+        comment_rating = sum(comment.rating for comment in self.user.comment_set.all())
+
+        # Суммарный рейтинг комментариев к статьям автора
+        post_comment_rating = sum(comment.rating for post in self.post_set.all() for comment in post.comment_set.all())
+
+        # Общий рейтинг автора
+        self.rating = post_rating + comment_rating + post_comment_rating
+        self.save()
 
     def __str__(self):
         return self.user.username
