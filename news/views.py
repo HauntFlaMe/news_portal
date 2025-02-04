@@ -1,18 +1,18 @@
 from django.http import HttpResponse
+from django.shortcuts import render
+from .models import Post
+from django.shortcuts import get_object_or_404
+
 
 def index(request):
     return HttpResponse("Добро пожаловать на News Portal!")
 
-from django.shortcuts import get_object_or_404
-from .models import Post
 
-def post_detail(request, post_id):
+def news_list(request):
+    posts = Post.objects.filter(type='NW').order_by('-created_at')  # Только новости, отсортированные по дате
+    return render(request, 'news/news_list.html', {'posts': posts})
+
+
+def news_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    return HttpResponse(f'Заголовок: {post.title}<br>Текст: {post.text}')
-
-from django.shortcuts import get_object_or_404
-from .models import Post
-
-def post_detail(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
-    return HttpResponse(f'Заголовок: {post.title}<br>Текст: {post.text}')
+    return render(request, 'news/news_detail.html', {'post': post})

@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # Админка Django
@@ -25,4 +26,9 @@ urlpatterns = [
 urlpatterns = [
     path('', views.index, name='index'),
     path('posts/<int:post_id>/', views.post_detail, name='post_detail'),
+]
+
+urlpatterns = [
+    path('news/', views.news_list, name='news_list'),
+    path('news/<int:post_id>/', views.news_detail, name='news_detail'),
 ]
