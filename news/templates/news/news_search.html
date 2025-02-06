@@ -1,0 +1,19 @@
+{% extends 'default.html' %}
+
+{% block content %}
+<h1>Поиск новостей</h1>
+<form method="get">
+    {{ filter.form.as_p }}
+    <button type="submit">Искать</button>
+</form>
+
+<ul>
+    {% for post in filter.qs %}
+    <li>
+        <a href="{% url 'news_detail' post.id %}">{{ post.title }}</a>
+        <p>{{ post.created_at|date:"d.m.Y" }}</p>
+        <p>{{ post.text|truncatechars:20 }}</p>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

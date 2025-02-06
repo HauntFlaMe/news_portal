@@ -2,13 +2,13 @@
 {% load custom_filters %}
 
 {% block content %}
-<h1>Список новостей</h1>
+<h1>Список статей</h1>
 <ul>
-    {% for post in page_obj %}
+    {% for article in articles %}
     <li>
-        <a href="{% url 'news_detail' post.id %}">{{ post.title|censor }}</a>
-        <p>{{ post.created_at|date:"d.m.Y" }}</p>
-        <p>{{ post.text|truncatechars:20|censor }}</p>
+        <a href="{% url 'article_detail' article.id %}">{{ article.title|censor }}</a>
+        <p>{{ article.created_at|date:"d.m.Y" }}</p>
+        <p>{{ article.text|truncatechars:20|censor }}</p>
     </li>
     {% endfor %}
 </ul>
