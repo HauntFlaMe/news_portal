@@ -20,7 +20,7 @@ from . import views
 from .views import (NewsCreateView, NewsUpdateView, NewsDeleteView,
                     ArticleCreateView, ArticleUpdateView, ArticleDeleteView)
 from .views import ProfileUpdateView
-from .views import become_author
+from .views import become_author, subscribe, unsubscribe
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # Админка Django
@@ -59,4 +59,6 @@ urlpatterns = [
     path('profile/edit/', ProfileUpdateView.as_view(), name='profile_edit'),
     path('accounts/', include('allauth.urls')),
     path('become-author/', become_author, name='become_author'),
+    path('category/<int:category_id>/subscribe/', subscribe, name='subscribe'),
+    path('category/<int:category_id>/unsubscribe/', unsubscribe, name='unsubscribe'),
 ]

@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from .models import Post
+from .models import Post, Category, Subscription
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from .filters import PostFilter
@@ -99,3 +99,15 @@ def become_author(request):
     authors_group = Group.objects.get(name='authors')
     request.user.groups.add(authors_group)  # Добавляем пользователя в группу 'authors'
     return redirect('profile')  # Перенаправляем на страницу профиля    
+
+@login_required
+def subscribe(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    Subscription.objects.get_or_create(user=request.user, category=category)
+    return redirect('category_detail', category_id=category_id)
+
+@login_required
+def unsubscribe(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    Subscription.objects.filter(user=request.user, category=category).delete()
+    return redirect('category_detail', category_id=category_id)

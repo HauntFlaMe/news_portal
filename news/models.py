@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import CreateView, UpdateView
-from .models import Post
+from .models import Post, Category
 
 
 class Author(models.Model):
@@ -110,4 +110,11 @@ class NewsUpdateView(PermissionRequiredMixin, UpdateView):
     fields = ['title', 'text', 'categories']
     template_name = 'news_edit.html'
     success_url = reverse_lazy('news_list')
-    
+
+class Subscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.username} подписан на {self.category.name}'
