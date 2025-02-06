@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.views.generic import CreateView, UpdateView
+from .models import Post
 
 
 class Author(models.Model):
@@ -87,3 +90,24 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.user.username} - {self.text[:20]}'
+
+
+class NewsCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = 'news.add_post'
+    model = Post
+    fields = ['title', 'text', 'categories']
+    template_name = 'news_create.html'
+    success_url = reverse_lazy('news_list')
+
+    def form_valid(self, form):
+        form.instance.type = 'NW'  # Указываем тип "новость"
+        form.instance.author = self.request.user.author
+        return super().form_valid(form)
+
+class NewsUpdateView(PermissionRequiredMixin, UpdateView):
+    permission_required = 'news.change_post'
+    model = Post
+    fields = ['title', 'text', 'categories']
+    template_name = 'news_edit.html'
+    success_url = reverse_lazy('news_list')
+    

@@ -57,3 +57,9 @@
     comments = Comment.objects.filter(post=best_post)
     for comment in comments:
         print(f'Дата: {comment.created_at}, Пользователь: {comment.user.username}, Рейтинг: {comment.rating}, Текст: {comment.text}')
+
+13. Создание группы common и authors:
+    from django.contrib.auth.models import Group
+
+    Group.objects.get_or_create(name='common')
+    Group.objects.get_or_create(name='authors')       

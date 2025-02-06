@@ -19,6 +19,8 @@ from django.urls import include, path
 from . import views
 from .views import (NewsCreateView, NewsUpdateView, NewsDeleteView,
                     ArticleCreateView, ArticleUpdateView, ArticleDeleteView)
+from .views import ProfileUpdateView
+from .views import become_author
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # Админка Django
@@ -51,4 +53,10 @@ urlpatterns = [
     path('articles/create/', ArticleCreateView.as_view(), name='article_create'),
     path('articles/<int:pk>/edit/', ArticleUpdateView.as_view(), name='article_edit'),
     path('articles/<int:pk>/delete/', ArticleDeleteView.as_view(), name='article_delete'),
+]
+
+urlpatterns = [
+    path('profile/edit/', ProfileUpdateView.as_view(), name='profile_edit'),
+    path('accounts/', include('allauth.urls')),
+    path('become-author/', become_author, name='become_author'),
 ]

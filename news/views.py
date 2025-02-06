@@ -3,10 +3,12 @@ from django.shortcuts import render
 from .models import Post
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
-from django.shortcuts import render
 from .filters import PostFilter
 from django.views.generic import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.contrib.auth.models import Group
 
 
 def index(request):
@@ -82,3 +84,18 @@ class ArticleDeleteView(DeleteView):
     model = Post
     template_name = 'news/article_delete.html'
     success_url = reverse_lazy('news_list')
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    fields = ['username', 'first_name', 'last_name', 'email']
+    template_name = 'profile_edit.html'  # Укажите ваш шаблон
+    success_url = reverse_lazy('profile')  # Укажите URL для перенаправления после успешного редактирования
+
+    def get_object(self, queryset=None):
+        return self.request.user  # Редактируем профиль текущего пользователя
+    
+@login_required
+def become_author(request):
+    authors_group = Group.objects.get(name='authors')
+    request.user.groups.add(authors_group)  # Добавляем пользователя в группу 'authors'
+    return redirect('profile')  # Перенаправляем на страницу профиля    
