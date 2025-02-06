@@ -9,6 +9,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.contrib.auth.models import Group
+from .tasks import notify_subscribers
 
 
 def index(request):
@@ -111,3 +112,15 @@ def unsubscribe(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     Subscription.objects.filter(user=request.user, category=category).delete()
     return redirect('category_detail', category_id=category_id)
+
+class PostCreateView(CreateView):
+    model = Post
+    fields = ['title', 'text', 'categories']
+    template_name = 'post_create.html'
+    success_url = reverse_lazy('post_list')
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        response = super().form_valid(form)
+        notify_subscribers.delay(self.object.id)  # Асинхронный вызов задачи
+        return response
